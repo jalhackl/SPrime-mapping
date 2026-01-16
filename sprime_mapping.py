@@ -6,19 +6,18 @@ from collections import defaultdict
 
 def split_archaic_fragments_from_segment(segment_snps, hap_hits):
     """
-    Split a segment into fragments of contiguous archaic SNPs.
+    Split a segment into fragments of contiguous introgressed SNPs.
 
     Parameters
     ----------
     segment_snps : list[int]
-        Sorted positions of all SNPs in the segment (archaic + non-archaic)
+        Sorted positions of all SNPs in the segment (archaic/introgressed + non-archaic/non-introgressed)
     hap_hits : set[int]
-        Positions of SNPs in this haplotype that carry the archaic allele
+        Positions of SNPs in this haplotype that carry the introgressed allele
 
     Returns
     -------
     List of fragments: each fragment is a list of SNP positions
-    optional: List of all snps in fragments: each fragment is a list of SNP positions, including non-archaic snps
     """
 
     fragments = []
@@ -93,7 +92,7 @@ def map_sprime_segments(
     if not target_individuals:
         target_individuals = samples
 
-    # Collect archaic SNPs per haplotype
+    # Collect introgressed SNPs per haplotype
     hap_hits = defaultdict(lambda: defaultdict(lambda: {0: set(), 1: set()}))
     for seg_id, snps in segments.items():
         for snp in snps:
@@ -129,7 +128,7 @@ def map_sprime_segments(
                 if not hits:
                     continue
 
-                # segment filter: a haploitype / individual has to have at least this fraction of snps which are introgressed according to SPrime
+                # segment filter: a haplotype / individual has to have at least this fraction of snps which are introgressed according to SPrime
                 frac = len(hits) / seg_size
                 if segment_fraction is not None and frac < segment_fraction:
                     continue
@@ -147,11 +146,11 @@ def map_sprime_segments(
                             "nsnps": 1,
                             "segment_fraction": 1/seg_size,
                             "segment": seg_id,
-                            "archaic_snps_present": [snp]
+                            "introgressed_snps_present": [snp]
                         })
                     continue
 
-                # min snps filter within segment: only regions of continguous archaic snps of the size given by min_snps are added
+                # min snps filter within segment: only regions of continguous introgressed snps of the size given by min_snps are added
                 if min_snps is not None:
                     fragments = split_archaic_fragments_from_segment(seg_snps, set(hits))
                     for ifrag, frag in enumerate(fragments):
@@ -167,7 +166,7 @@ def map_sprime_segments(
                             "nsnps": len(frag),
                             "segment_fraction": frac,
                             "segment": seg_id,
-                            "archaic_snps_present": frag,
+                            "introgressed_snps_present": frag,
                         })
                 else:
                     # No fragment filtering by min_snps: take full span (i.e. full segment, except for the borders, in which the first and last matching SNP is used)
@@ -182,7 +181,7 @@ def map_sprime_segments(
                         "segment_fraction": frac,
                         "segment": seg_id,
                         "all_snps_present": seg_snps,
-                        "archaic_snps_present": hits,
+                        "introgressed_snps_present": hits,
                     })
 
     df = pd.DataFrame(records)
