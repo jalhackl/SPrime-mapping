@@ -10,8 +10,12 @@ score-file segments.
 
 sprime_info preprocesses the obtained dataframe so that the total length of the introgressed tracts, average segments per 
 individual/haplotype etc. can be easily computed.
-In sprime_mapping_example.ipynb an example is shown, including different filtering options (fraction of SNPs which has to be present
-in a segment, min nr. of contiguous SNPs within a fragment in a particular segment, extraction of all SNPs) and the computation of averages.
+
+
+In sprime_mapping_example.ipynb an example is shown for  matching and the computation of averages.
+
+sprime_mapping_example_filtering.ipynb uses the same data and includes different filtering options (fraction of SNPs which has to be present
+in a segment, min nr. of contiguous SNPs within a fragment in a particular segment, extraction of all SNPs).
 
 The necessary input is a SPrime-score file (e.g. sprime.1src.out.100000.score) and the corresponding vcf-file (archie.1_biallelic.vcf.gz).
 Furthermore, a file with the target individuals can be provided (archie.1.tgt.ind.list), otherwise for all individuals (incl. reference) the mapping is done.
